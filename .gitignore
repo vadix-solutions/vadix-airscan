@@ -1,3 +1,4 @@
+bin/
 # The build artifacts
 .buildozer/
 # The python env
