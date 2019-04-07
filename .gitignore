@@ -1,3 +1,8 @@
+# The build artifacts
+.buildozer/
+# The python env
+vadix_airscan/ 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

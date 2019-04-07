@@ -1,0 +1,1 @@
+buildozer android release deploy run
