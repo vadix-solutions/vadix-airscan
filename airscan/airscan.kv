@@ -34,7 +34,7 @@ ScreenManagement:
         Label:
             text_size: self.width, None
             halign: 'center'
-            font_size: 26
+            font_size: sp(26)
             color: (1, 1, 1, .8)
             text: 'Please ensure you are connected to the host\'s WiFi network before beginning the scan!'
 
@@ -44,7 +44,7 @@ ScreenManagement:
         on_release: app.root.current = "scanning"
         # on_release: app.root.current = "result"
         text: "Begin Scan"
-        font_size: 50
+        font_size: sp(40)
 
     BoxLayout:
         padding: 10
@@ -55,7 +55,7 @@ ScreenManagement:
         Label:
             text_size: self.width, None
             halign: 'center'
-            font_size: 14
+            font_size: sp(14)
             color: (1, 1, 1, .8)
             text: 'This application must not be used in any way which is unlawful, illegal, fraudulent or harmful, or in connection with any unlawful, illegal, fraudulent or harmful purpose or activity.'
 
@@ -75,11 +75,11 @@ ScreenManagement:
         pos_hint: {'center_x':.85, 'center_y':.2}
 
     BoxLayout:
-        size_hint: 0.5, 0.5
+        size_hint: 0.9, 0.5
         pos_hint: {'center_x':.5, 'center_y':.55}
         Label:
             id: status_label
-            font_size: 20
+            font_size: sp(16)
             height: 24
             text_size: self.width, None
             color: (1, 1, 1, .8)
@@ -90,7 +90,7 @@ ScreenManagement:
         max: 100
         value: 0
         height: '10dp'
-        size_hint: (0.6, 0.6)
+        size_hint: (0.9, 0.6)
         pos_hint: {'center_x':.5, 'center_y':.5}
     
    
@@ -128,7 +128,7 @@ ScreenManagement:
             pos_hint: {'center_x':.25, 'center_y':.5}
             on_release: app.root.current = "main"
             text: "Perform new scan"
-            font_size: 20
+            font_size: sp(20)
 
     BoxLayout:
         id: advanced_box
@@ -164,14 +164,14 @@ ScreenManagement:
                 
                 Label:
                     id: summary_string
-                    font_size: 40
+                    font_size: sp(25)
                     size_hint: 1.0, 0.3
                     color: (1, 1, 1, .8)
                     text: 'You are at risk.'
                 
                 Button:
-                    font_size: 16
-                    size_hint: 0.8, 0.15
+                    font_size: sp(12)
+                    size_hint: 0.9, 0.15
                     pos_hint: {'center_x':.5}
                     text: 'Click for more information..'
                     on_release: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
@@ -188,12 +188,13 @@ ScreenManagement:
                 Label:
                     id: summary_string
                     size_hint: 1.0, 0.3
-                    font_size: 40
+                    font_size: sp(25)
                     color: (1, 1, 1, .8)
                     text: 'You are not at risk.'
 
         GridLayout:
             id: summary_grid
+            font_size: sp(8)
             cols: 5
             row_force_default: True
             row_default_height: 40

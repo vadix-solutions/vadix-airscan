@@ -13,7 +13,7 @@ class ResultScreen(Screen):
     isShownMenu = BooleanProperty(True)
     atRisk = BooleanProperty(False)
 
-    headers = ['Device IP', 'Open Ports', 'Vendor', 'Web Listen', 'Web Response']
+    headers = ['Device IP', 'Open Ports', 'Vendor', 'Listening', 'Server']
     cell_kwargs = {'size_hint_x':.18}
 
     def on_enter(self, **kwargs):
