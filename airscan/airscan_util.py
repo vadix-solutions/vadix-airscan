@@ -1,5 +1,4 @@
 import json
-import click
 from pygments import highlight, lexers, formatters
 
 
@@ -16,8 +15,8 @@ def cf_json(json_obj):
 
 def banner(b_str, color='green'):
     """Print a nice banner"""
-    click.secho("-" * 60, fg=color)
-    click.secho(b_str, fg=color)
-    click.secho("-" * 60, fg=color)
+    print("-" * 60)
+    print(b_str)
+    print("-" * 60)
 
 

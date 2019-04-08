@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import click
 import socket
 import tempfile
 import threading
@@ -92,9 +91,9 @@ class Scanner(object):
         tstart = datetime.now()
         scan_result = scanner.scan_port(targets, port, batch_size, timeout)
         scan_duration = datetime.now() - tstart
-        click.secho('Scanning Completed in: %s' % (scan_duration), fg='blue')
+        print('Scanning Completed in: %s' % (scan_duration))
         # Printing the information to screen
-        click.secho("Scan results: \n%s" % cf_json(scan_result), fg='blue')
+        print("Scan results: \n%s" % cf_json(scan_result))
         return scan_result
 
     def ip4_addresses(self):
