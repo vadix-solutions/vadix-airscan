@@ -29,7 +29,7 @@ class ResultScreen(Screen):
         summary_report = {}
         for ip, result_data in data_report.items():
             summary_report[ip] = [
-                max(list(result_data['open_ports'].values())),
+                max(list(result_data['open_ports'].values())) > 0,
                 int(result_data.get('VendorMatch') is not None),
                 int(result_data.get('HttpResponse', False)),
                 int(result_data.get('FlaggedResponse', False)),
@@ -41,7 +41,7 @@ class ResultScreen(Screen):
             layout.add_widget(Button(text=header, disabled=True, **self.cell_kwargs))
         
         for ip, summary_report in sorted(summary_report.items(), 
-            key=lambda kv: sum(kv[1])):
+            key=lambda kv: 5-sum(kv[1])):
             layout.add_widget(Label(text=ip, **self.cell_kwargs))
 
             for cond_passed in summary_report:
