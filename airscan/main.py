@@ -40,7 +40,7 @@ class SimpleApp(kivy.app.App):
 			df_flagged_http,
 		], axis=1)
 		print(source_data_df)
-		self.label.text = source_data_df
+		self.label.text = str(source_data_df)
 		# report_dataframe = self.summarise_data(source_data_df)
 
 		# dfgui.show(source_data_df)
