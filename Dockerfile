@@ -25,6 +25,6 @@ volume /opt/
 
 WORKDIR /buildozer/
 
-RUN python3-pip install virtualenv
+RUN apt-get install -y python-virtualenv
 
 CMD buildozer android debug

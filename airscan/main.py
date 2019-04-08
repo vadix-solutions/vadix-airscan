@@ -40,8 +40,24 @@ class SimpleApp(kivy.app.App):
 			source_data_df[ip].update(df_flagged_http.get(ip, {}))
 
 		print(cf_json(source_data_df))
-		self.label.text = str(source_data_df)
-		
+		self.label.text = self.get_summary(source_data_df)
+	
+	def get_summary(self, source_data_df):
+		ip_threats = {}
+		for ip, results in source_data_df.items():
+			threatlevel = 0
+			if results.get('VendorMatch'):
+				threatlevel += 1
+			if max(results.get('open_ports', {}).values()):
+				threatlevel += 1
+			if results.get('HttpResponse'):
+				threatlevel += 1
+			if results.get('FlaggedResponse'):
+				threatlevel += 1
+			ip_threats[ip] = "(%s/%s) threats detected" % (threatlevel, 4)
+		summary_text = "\n".join(["IP (%s): %s" % (ip, threattext) for ip, threattext in ip_threats.items()])
+		return summary_text
+			
 if __name__ == "__main__":
 	simpleApp = SimpleApp()
 	simpleApp.run()
