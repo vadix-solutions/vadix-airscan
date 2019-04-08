@@ -3,7 +3,6 @@ from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 from airscan_util import cf_json, banner
-import pandas as pd
 
 
 class Scanner(object):
@@ -20,8 +19,8 @@ class Scanner(object):
         sess = self.get_session()
         report_data = {}
         
-        for ip_addr, open_ports in ip_port_dataframe.iterrows():
-            for port_number, is_port_open in open_ports.to_dict().items():
+        for ip_addr, open_ports in ip_port_dataframe.items():
+            for port_number, is_port_open in open_ports.items():
                 report_data[ip_addr] = {}
                 url = "http://%s:%s" % (ip_addr, port_number)
                 print("Testing HTTP from %s" % (url))
@@ -37,6 +36,4 @@ class Scanner(object):
                         print("%s in text" % self.target_word)
                         report_data[ip_addr]['FlaggedResponse'] = True
 
-        report_dataframe = pd.DataFrame(report_data).T
-        report_dataframe = report_dataframe.fillna(False)
-        return report_dataframe
+        return report_data

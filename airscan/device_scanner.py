@@ -9,7 +9,6 @@ import ipaddress
 from datetime import datetime
 from airscan_util import cf_json, banner
 from netifaces import interfaces, ifaddresses, AF_INET
-import pandas as pd
 
 
 class Scanner(object):
@@ -56,7 +55,9 @@ class Scanner(object):
             except socket.gaierror:
                 print('Hostname could not be resolved: %s' % target)
             TCPsock.connect((ip, port))
-            output[target] = True
+            if not output.get(ip):
+                output[ip] = {}
+            output[ip][port] = True
         except socket.error as e:
             pass
         except Exception as e:
@@ -121,21 +122,15 @@ class Scanner(object):
             complete_directory = {**self.port_directory, **self.known_device_target}
             port_list = set([item for sublist in complete_directory.values() for item in sublist])
             
-            report[ip_range] = {}
             for port in port_list:
-                report[ip_range][port] = self.run_scan(targets, port, self.batch_size, self.timeout)
+                report.update(self.run_scan(targets, port, self.batch_size, self.timeout))
 
-        report_dataframe = {}
-        for ip_range, report_data in report.items():
-            print("Adding report from: %s" % ip_range)
-            report_dataframe.update(report_data)
-        report_dataframe = pd.DataFrame(report_dataframe).fillna(False)
-        report_dataframe = self.prune_known_devices(report_dataframe)
-        return report_dataframe
+        report = self.prune_known_devices(report)
+        return report
 
-    def prune_known_devices(self, report_dataframe):
+    def prune_known_devices(self, report_data):
         detected_devices = {}
-        for ip_address, r in report_dataframe.iterrows():
+        for ip_address, r in report_data.items():
             ports_open = [port for port, port_open in r.items() if port_open]
             print("Testing IP(%s): %s" % (ip_address, ports_open))
             for device_code, port_pattern in self.known_device_target.items():
@@ -143,7 +138,7 @@ class Scanner(object):
                     print("Found device (%s): %s" % (device_code, ip_address))
                     detected_devices[ip_address] = device_code
                     for port in ports_open:
-                        report_dataframe.at[ip_address, port] = False
+                        report_data[ip_address][port] = False
                     break
         print("Detected devices: %s" % detected_devices)
-        return report_dataframe
+        return report_data
