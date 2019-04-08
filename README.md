@@ -20,3 +20,9 @@ The source code is in the 'airscan' folder.
 ## Building and deploying the app
 
 docker run --privileged -v $PWD:/buildozer/ -v /dev/bus/usb:/dev/bus/usb -v /etc/udev/rules.d/:/etc/udev/rules.d/ vadix/buildozer buildozer android debug deploy run
+
+
+
+# Credits
+
+Success/Danger icons provided by PngTree.com ([free icons](https://pngtree.com/free-icon) from pngtree.com)
