@@ -22,7 +22,7 @@ class Scanner(object):
         
         for ip_addr, open_ports in ip_port_dataframe.iterrows():
             for port_number, is_port_open in open_ports.to_dict().items():
-                report_data[ip] = {}
+                report_data[ip_addr] = {}
                 url = "http://%s:%s" % (ip_addr, port_number)
                 print("Testing HTTP from %s" % (url))
                 try:
@@ -32,10 +32,10 @@ class Scanner(object):
                     continue
                 if url_res.ok:
                     print("Valid Response!")
-                    report_data[ip]['HttpResponse'] = True
+                    report_data[ip_addr]['HttpResponse'] = True
                     if self.target_word in url_res.text + str(url_res.headers):
                         print("%s in text" % self.target_word)
-                        report_data[ip]['FlaggedResponse'] = True
+                        report_data[ip_addr]['FlaggedResponse'] = True
 
         report_dataframe = pd.DataFrame(report_data).T
         report_dataframe = report_dataframe.fillna(False)

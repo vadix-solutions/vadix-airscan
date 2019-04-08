@@ -8,6 +8,7 @@ import threading
 import ipaddress
 from datetime import datetime
 from airscan_util import cf_json, banner
+from netifaces import interfaces, ifaddresses, AF_INET
 import pandas as pd
 
 
@@ -16,10 +17,10 @@ class Scanner(object):
     port_directory = {
         "webservice": [
             80,81,82,100,888,
-            8080,8081,8083,
-            443,3074,8443,
-            9000,9901,30001,
-            37777
+            # 8080,8081,8083,
+            # 443,3074,8443,
+            # 9000,9901,30001,
+            # 37777
         ],
         "RTSP": [
             554,
@@ -122,7 +123,7 @@ class Scanner(object):
             
             report[ip_range] = {}
             for port in port_list:
-                report[ip_range][port] = run_scan(targets, port, batch_size, timeout)
+                report[ip_range][port] = self.run_scan(targets, port, self.batch_size, self.timeout)
 
         report_dataframe = {}
         for ip_range, report_data in report.items():

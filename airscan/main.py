@@ -17,7 +17,7 @@ class SimpleApp(kivy.app.App):
 		
 		self.label = kivy.uix.label.Label(text="Your Message.")
 		self.button = kivy.uix.button.Button(text="Click Me.")
-		self.button.bind(on_press=self.graph)
+		self.button.bind(on_press=self.generate_report)
 		
 		self.boxLayout = kivy.uix.boxlayout.BoxLayout(orientation="vertical")
 		self.boxLayout.add_widget(self.textInput)
@@ -26,7 +26,7 @@ class SimpleApp(kivy.app.App):
 		
 		return self.boxLayout
 	
-	def graph(self,btn):
+	def generate_report(self,btn):
 		vdx_dev_scanner = VdxDevScanner()
 		vdx_mac_scanner = VdxMacScanner()
 		vdx_http_scanner = VdxHttpScanner()
@@ -39,10 +39,11 @@ class SimpleApp(kivy.app.App):
 			df_flagged_macs,
 			df_flagged_http,
 		], axis=1)
-
+		print(source_data_df)
+		self.label.text = source_data_df
 		# report_dataframe = self.summarise_data(source_data_df)
 
-		dfgui.show(source_data_df)
+		# dfgui.show(source_data_df)
 		
 	def displayMessage(self, btn):
 		self.label.text = self.textInput.text

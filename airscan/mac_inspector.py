@@ -24,7 +24,6 @@ class Scanner(object):
             if short_mac in vendor_data.MAC.values:
                 match = vendor_data.loc[vendor_data['MAC'] == short_mac]
                 report_data[ip]['VendorMatch'] = match['VENDOR_NAME'].values[0]
-                report_data[ip]['VendorMatch'] = vendor_data.loc[vendor_data['MAC'] == short_mac]['VENDOR_NAME'][0]
 
         report_dataframe = pd.DataFrame(report_data).T
         report_dataframe = report_dataframe.fillna(False)
