@@ -7,7 +7,7 @@
 
 ScreenManagement:
     transition: WipeTransition()
-	MainScreen:
+    MainScreen:
     ScanScreen:
     ResultScreen:
 
@@ -24,7 +24,7 @@ ScreenManagement:
         size_hint: 0.5, 0.5
         source: 'assets/vadix_logo.png'
         pos_hint: {'center_x':.85, 'center_y':.2}
-    
+
     BoxLayout:
         padding: 10
         spacing: 10
@@ -36,15 +36,15 @@ ScreenManagement:
             halign: 'center'
             font_size: sp(26)
             color: (1, 1, 1, .8)
-            text: 'Please ensure you are connected to the host\'s WiFi network before beginning the scan!'
+            text: "Please ensure you are connected to the host\'s WiFi network before beginning the scan!"
 
     Button:
-        size_hint: 0.5, 0.2
+        size_hint: 0.4, 0.15
+        border: 3, 3, 3 ,3
         pos_hint: {'center_x':.5, 'center_y':.4}
-        on_release: app.root.current = "scanning"
-        # on_release: app.root.current = "result"
-        text: "Begin Scan"
-        font_size: sp(40)
+        background_down: 'assets/start_button_down.png'
+        background_normal: 'assets/start_button.png'
+        on_release: app.root.current = "result"
 
     BoxLayout:
         padding: 10
@@ -92,8 +92,7 @@ ScreenManagement:
         height: '10dp'
         size_hint: (0.9, 0.6)
         pos_hint: {'center_x':.5, 'center_y':.5}
-    
-   
+
 
 <ResultScreen>:
     name: "result"
@@ -108,89 +107,81 @@ ScreenManagement:
         size_hint: 0.5, 0.5
         source: 'assets/vadix_logo.png'
         pos_hint: {'center_x':.85, 'center_y':.2}
-        
-    BoxLayout:
-        size_hint: 0.9, 0.08
-        pos_hint: {'center_x':.5, 'center_y':.954}
-        opacity: 0
-        BoxLayout:
-            orientation: "vertical"
-            Label: 
-                height: 16
-                color: (1, 1, 1, .8)
-                text: 'Raw Report (advanced)'
-            CheckBox:
-                size: self.width, 24
-                on_press: root.isShownMenu = not root.isShownMenu
 
-        Button:
-            size_hint: 0.9, 0.75
-            pos_hint: {'center_x':.25, 'center_y':.5}
-            on_release: app.root.current = "main"
-            text: "Perform new scan"
-            font_size: sp(20)
+    # BoxLayout:
+    #     size_hint: 0.9, 0.08
+    #     pos_hint: {'center_x':.5, 'center_y':.954}
+    #     opacity: 0
+    #     BoxLayout:
+    #         orientation: "vertical"
+    #         Label: 
+    #             height: 16
+    #             color: (1, 1, 1, .8)
+    #             text: 'Raw Report (advanced)'
+    #         CheckBox:
+    #             size: self.width, 24
+    #             on_press: root.isShownMenu = not root.isShownMenu
 
-    BoxLayout:
-        id: advanced_box
-        size_hint: 0.9, 0.9
-        pos_hint: {'center_x':.5, 'center_y':.46}
-        width:   0 if root.isShownMenu else 0.9
-        opacity: 0 if root.isShownMenu else 1
-        CodeInput:
-            id: result_panel
+    #     Button:
+    #         size_hint: 0.9, 0.75
+    #         pos_hint: {'center_x':.25, 'center_y':.5}
+    #         on_release: app.root.current = "main"
+    #         text: "Perform new scan"
+    #         font_size: sp(20)
+
+    # BoxLayout:
+    #     id: advanced_box
+    #     size_hint: 0.9, 0.9
+    #     pos_hint: {'center_x':.5, 'center_y':.46}
+    #     width:   0 if root.isShownMenu else 0.9
+    #     opacity: 0 if root.isShownMenu else 1
+    #     CodeInput:
+    #         id: result_panel
 
     BoxLayout:
         orientation: "vertical"
-        id: default_box
+        id: summary_main
         size_hint: 0.9, 0.85
         pos_hint: {'center_x':.5, 'top': 0.85}
-        opacity: 1
-        spacing: 30
-        
-        BoxLayout:
-            orientation: "horizontal"
-            size_hint: 1.0, 0.5
-            pos_hint: {'center_x':.5, 'top':.9}
+        spacing: 25
+        opacity: 0
 
-            BoxLayout:
-                orientation: "vertical"
-                opacity: 1.0 if root.atRisk else 0.05
-                
-                Image:
-                    id: summary_image
-                    size_hint: 1.0, 0.4
-                    source: 'assets/danger.png'
-                    pos_hint: {'center_x':.5, 'top':.3}
-                
-                Label:
-                    id: summary_string
-                    font_size: sp(25)
-                    size_hint: 1.0, 0.3
-                    color: (1, 1, 1, .8)
-                    text: 'You are at risk.'
-                
-                Button:
-                    font_size: sp(12)
-                    size_hint: 0.9, 0.15
-                    pos_hint: {'center_x':.5}
-                    text: 'Click for more information..'
-                    on_release: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
-                
-            BoxLayout:
-                orientation: "vertical"
-                opacity: 0.05 if root.atRisk else 1.0
+        Image:
+            id: summary_image
+            size_hint: 1.0, 0.4
+            source: 'assets/danger.png'
+            pos_hint: {'center_x':.5, 'top':.3}
 
-                Image:
-                    id: summary_image
-                    size_hint: 1.0, 0.5
-                    source: 'assets/success.png'
-                    pos_hint: {'center_x':.5, 'top':.3}
-                Label:
-                    id: summary_string
-                    size_hint: 1.0, 0.3
-                    font_size: sp(25)
-                    color: (1, 1, 1, .8)
-                    text: 'You are not at risk.'
+        BoxLayout:    
+            orientation: "vertical"
+            spacing: 5
+            size_hint: 1.0, 0.2
+            pos_hint: {'center_x':.5, 'top':.4}
+            Label:
+                id: summary_string
+                font_size: sp(25)
+                color: (1, 1, 1, .8)
+
+            Label:
+                id: summary_substring
+                font_size: sp(12)
+                color: (1, 1, 1, .7)
+
+            Label:
+                text: '[ref=some][u]Press here for more info[/u][/ref]'
+                font_size: sp(20)
+                markup: True
+                color: (0.3, 0.3, 1.0, .8)
+                on_ref_press: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
+
+        # Button:
+        #     font_size: sp(12)
+        #     size_hint: 0.9, 0.15
+        #     pos_hint: {'center_x':.5}
+        #     text: 
+        #     background_down: 'assets/blog_button.png'
+        #     background_normal: 'assets/blog_button.png'
+        #     on_release: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
 
         GridLayout:
             id: summary_grid
@@ -198,7 +189,7 @@ ScreenManagement:
             cols: 5
             row_force_default: True
             row_default_height: 40
-    
+
 
 
 
