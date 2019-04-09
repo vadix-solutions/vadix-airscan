@@ -104,6 +104,6 @@ class Scanner(object):
         for port in sorted(self.port_list):
             steps.append({
                 "func": self.scan_port, "args": [port], 
-                "end_text": "Scanning network... (scanned port:%s)" % (port)
+                "end_text": "Scanning network..."
             })
         return steps

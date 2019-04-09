@@ -1,12 +1,12 @@
 #:kivy 1.0
 #:import kivy kivy
 #:import win kivy.core.window
-#:import WipeTransition kivy.uix.screenmanager.SlideTransition
+#:import Transition kivy.uix.screenmanager.WipeTransition
 #:import CheckBox kivy.uix.checkbox
 #:import webbrowser webbrowser
 
 ScreenManagement:
-    transition: WipeTransition()
+    transition: Transition()
     MainScreen:
     ScanScreen:
     ResultScreen:
@@ -39,7 +39,9 @@ ScreenManagement:
             text: "Please ensure you are connected to the host\'s WiFi network before beginning the scan!"
 
     Button:
-        size_hint: 0.4, 0.15
+        size_hint_x: 0.3
+        size_hint_y: None
+        height: .3*self.width
         border: 3, 3, 3 ,3
         pos_hint: {'center_x':.5, 'center_y':.4}
         background_down: 'assets/start_button_down.png'

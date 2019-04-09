@@ -74,6 +74,7 @@ class ScanScreen(Screen):
 
 
     def filter_known_devices(self, source_data):
+        print("Source data: %s" % source_data)
         detected_known_devices = {}
         for ip, ip_data in source_data.items():
             known_device = self.is_device_known(ip_data)
