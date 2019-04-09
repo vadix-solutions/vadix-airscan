@@ -26,13 +26,8 @@ class ScanScreen(Screen):
     report = {}
 
     def generate_report(self, _):
-        try:
-            current_step = self.scan_pipeline[self.pipeline_index]
-        except IndexError:
-            print("We're done")
-            self.summarise_report()
-            return 
-
+        current_step = self.scan_pipeline[self.pipeline_index]
+        
         if self.progress_value >= current_step['progress']:
             required_func = current_step['func']
             print("Next percentage (%s), requires running: %s" % (current_step['progress'], required_func))
@@ -47,17 +42,24 @@ class ScanScreen(Screen):
         
         self.progress_value += 1
         self.ids.progress_bar.value = self.progress_value
-        self.update_progressbar_trigger()
+        
+        if self.pipeline_index < len(self.scan_pipeline):
+            self.update_progressbar_trigger()
+        else:
+            self.summarise_report()
 
     def summarise_report(self):
-        source_data_df = {}
+        source_data = {}
         for ip, port_scan in self.scan_data['ip_scan'].items():
-            source_data_df[ip] = {
+            source_data[ip] = {
                 'open_ports': port_scan
             }
-            source_data_df[ip].update(self.scan_data['mac_scan'].get(ip, {}))
-            source_data_df[ip].update(self.scan_data['http_scan'].get(ip, {}))
-        App.get_running_app().report = source_data_df
+            source_data[ip].update(self.scan_data['mac_scan'].get(ip, {}))
+            source_data[ip].update(self.scan_data['http_scan'].get(ip, {}))
+
+        source_data = self.filter_known_devices(source_data)
+
+        App.get_running_app().report = source_data
         self.ids.progress_bar.value = 100
         self.parent.current = "result"
         print(cf_json(App.get_running_app().report))
@@ -68,9 +70,13 @@ class ScanScreen(Screen):
         self.pipeline_index = 0
         self.scan_data = {}
         
-        print("I am in the scanning part on start")
         self.update_progressbar_trigger = Clock.create_trigger(self.generate_report)
         self.update_progressbar_trigger()
+
+    def filter_known_devices(self, source_data):
+        print("Filtering devices found")
+        return source_data
+
 
     scan_pipeline = [
         {

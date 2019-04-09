@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import socket
+import requests
 import tempfile
 import threading
 import ipaddress
@@ -12,27 +13,31 @@ from netifaces import interfaces, ifaddresses, AF_INET
 
 class Scanner(object):
 
-    port_directory = {
-        "webservice": [
-            80,
-            81,82,100,888,
-            8080,8081,8083,
-            443,3074,
-            9000,9901,30001,
-            37777
-        ],
-        "RTSP": [
-            554,
-        ]
-    }
+    port_scan_data = None
+    known_host_data = None
 
-    known_device_target = {
-        "chromecast": [9000, 8443, 8008, 8009],
-        "chromecast": [8443]
-    }
-
+    port_scan_url = "http://app.vadix.io/ports.json"
+    known_devices_url = "http://app.vadix.io/devices.json"
+    
     batch_size = 500
     timeout = 1     
+
+    def __init__(self, *args, **kwargs):
+        print("Attempting to load JSON definitions from URL")
+        def get_json(url, file_path):
+            try:
+                print("Loading Json from URL: %s" % url)
+                json_def = requests.get(url).json()
+            except:
+                print("Request failed, loading default file: %s" % file_path)
+                with open(file_path, "r") as jf:
+                    json_def = json.load(jf)
+            print("Returning: %s" % json_def)
+            return json_def
+
+        self.port_scan_data = get_json(self.port_scan_url, "assets/ports.json")
+        self.known_host_data = get_json(self.known_devices_url, "assets/known_devices.json")
+
 
     def _chunks(self, l, n):
         """Splits 'l' into a set of lists (max size 'n')"""
@@ -44,9 +49,11 @@ class Scanner(object):
         
     def TCP_connect(self, target, port, output, timeout):
         """Execute a single TCP port test"""
+        # Remove default router IPs
         if target.split(".")[-1] in ['1', '254']:
             print("Skipping: %s" % target)
             return
+
         TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         TCPsock.settimeout(timeout)
@@ -57,8 +64,8 @@ class Scanner(object):
                 print('Hostname could not be resolved: %s' % target)
             TCPsock.connect((ip, port))
             if not output.get(ip):
-                output[ip] = {}
-            output[ip][port] = True
+                output[ip] = []
+            output[ip].append(port)
         except socket.error as e:
             pass
         except Exception as e:
@@ -84,6 +91,7 @@ class Scanner(object):
                 thread.join()
         return scan_result
 
+
     def run_scan(self, targets, port, batch_size, timeout):
         ###############
         # RUN PORT SCAN
@@ -98,6 +106,7 @@ class Scanner(object):
         print("Scan results: \n%s" % cf_json(scan_result))
         return scan_result
 
+
     def ip4_addresses(self):
         ip_list = []
         for interface in [i for i in interfaces() if i.startswith("e") or i.startswith("w")]:
@@ -108,11 +117,12 @@ class Scanner(object):
                     ip_list.append((link['addr'], link['netmask']))
         return ip_list
 
+
     def generate_report(self):
         report = {}
-        ip_list = self.ip4_addresses()
-        for ip_tuple in ip_list:
-            ip_range = ipaddress.IPv4Network(ip_tuple, strict=False).with_prefixlen
+        device_ip_list = self.ip4_addresses()
+        for device_ip_tuple in device_ip_list:
+            ip_range = ipaddress.IPv4Network(device_ip_tuple, strict=False).with_prefixlen
             print("Scanning %s (%s connection batch, timeout=%s)" % (ip_range, self.batch_size, self.timeout))
 
             targets = []
@@ -120,26 +130,8 @@ class Scanner(object):
             if len(targets) == 0:
                 raise Exception("No targets for scan. Specify file or ip range using -h or -i")
             
-            complete_directory = {**self.port_directory, **self.known_device_target}
-            port_list = set([item for sublist in complete_directory.values() for item in sublist])
-            
+            port_list = set([item for sublist in self.port_scan_data.values() for item in sublist])
+
             for port in port_list:
                 report.update(self.run_scan(targets, port, self.batch_size, self.timeout))
-
-        report = self.prune_known_devices(report)
         return report
-
-    def prune_known_devices(self, report_data):
-        detected_devices = {}
-        for ip_address, r in report_data.items():
-            ports_open = [port for port, port_open in r.items() if port_open]
-            print("Testing IP(%s): %s" % (ip_address, ports_open))
-            for device_code, port_pattern in self.known_device_target.items():
-                if set(ports_open) == set(port_pattern):
-                    print("Found device (%s): %s" % (device_code, ip_address))
-                    detected_devices[ip_address] = device_code
-                    for port in ports_open:
-                        report_data[ip_address][port] = False
-                    break
-        print("Detected devices: %s" % detected_devices)
-        return report_data
