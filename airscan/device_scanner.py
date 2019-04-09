@@ -17,7 +17,7 @@ class Scanner(object):
             80,
             81,82,100,888,
             8080,8081,8083,
-            443,3074,8443,
+            443,3074,
             9000,9901,30001,
             37777
         ],
@@ -27,7 +27,8 @@ class Scanner(object):
     }
 
     known_device_target = {
-        "chromecast": [9000, 8443, 8008, 8009]
+        "chromecast": [9000, 8443, 8008, 8009],
+        "chromecast": [8443]
     }
 
     batch_size = 500

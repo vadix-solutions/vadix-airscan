@@ -45,7 +45,7 @@ class ScanScreen(Screen):
             self.pipeline_index += 1
             self.ids.status_label.text = current_step['text']
         
-        self.progress_value += .5
+        self.progress_value += 1
         self.ids.progress_bar.value = self.progress_value
         self.update_progressbar_trigger()
 
