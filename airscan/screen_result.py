@@ -17,19 +17,10 @@ class ResultScreen(Screen):
     cell_kwargs = {'size_hint_x':.18}
 
     def on_enter(self, **kwargs):
-        # data_report = App.get_running_app().report
-        data_report = {
-            '192.168.0.200': {
-                'open_ports': True, 'known_mac_vendor': False, 
-                'http_response': True, 'http_nvr_response': False, 'risk': 2}, 
-            '192.168.0.59': {
-                'open_ports': True, 'known_mac_vendor': False, 
-                'http_response': False, 'http_nvr_response': False, 'risk': 1}
-        }
+        data_report = App.get_running_app().report
         self.render_summary(data_report)
         self.render_summary_grid(data_report)
         self.fade_in()
-        # self.render_advanced_raw(data_report)
 
     def fade_in(self):
         anim = Animation(opacity=1, duration=0.3)
@@ -66,17 +57,10 @@ class ResultScreen(Screen):
                                          key=lambda kv: kv[1]['risk']):
             layout.add_widget(Label(text=ip, **self.cell_kwargs))
             for key in self.report_attr:
-                cond_passed = ip_report[key]
-                if cond_passed:
-                    image_source = 'assets/success.png' 
+                detected = ip_report[key]
+                if detected:
+                    image_source = 'assets/warning.png' 
                 else: 
-                    image_source = 'assets/warning.png'
+                    image_source = 'assets/success.png'
                 layout.add_widget(Image(source=image_source, **self.cell_kwargs))
 
- 
-    # def render_advanced_raw(self, data_report):
-    #     result_text = json.dumps(data_report, 
-    #         indent=4, sort_keys=True)
-    #     lx = lexers.get_lexer_by_name('json')
-    #     self.ids.result_panel.lexer = lx
-    #     self.ids.result_panel.text = result_text

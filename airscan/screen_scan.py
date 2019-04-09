@@ -74,9 +74,34 @@ class ScanScreen(Screen):
 
 
     def filter_known_devices(self, source_data):
-        print("Filtering devices found")
-        print(source_data)
-        return source_data
+        detected_known_devices = {}
+        for ip, ip_data in source_data.items():
+            known_device = self.is_device_known(ip_data)
+            if known_device:
+                detected_known_devices[ip] = known_device
+
+        print("Matched known devices: %s" % detected_known_devices)
+        for ip, known_device in detected_known_devices.items():
+            del(source_data[ip])
+            source_data[known_device] = {}
+
+
+    def is_device_known(self, ip_data):
+        mac = ip_data.get('mac')
+        open_ports = ip_data.get('open_ports', [])
+
+        for device, device_heuristic in self.known_devices.items():
+            heuristic_keys = device_heuristic.keys()
+            # Test if a mac Address matches
+            if mac and 'mac' in heuristic_keys:
+                if not max([mac.startswith(vmac) for vmac in device_heuristic.get("mac")]):
+                    continue
+            # Test a port groups match
+            if open_ports and 'open_ports' in heuristic_keys:
+                if not max([sorted(open_ports) == sorted(dev_op) for dev_op in device_heuristic.get("open_ports")]):
+                    continue
+            # Must be known
+            return device
 
 
     def prepare_report(self, source_data):

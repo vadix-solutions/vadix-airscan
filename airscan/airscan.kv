@@ -44,7 +44,7 @@ ScreenManagement:
         pos_hint: {'center_x':.5, 'center_y':.4}
         background_down: 'assets/start_button_down.png'
         background_normal: 'assets/start_button.png'
-        on_release: app.root.current = "result"
+        on_release: app.root.current = "scanning"
 
     BoxLayout:
         padding: 10
@@ -108,36 +108,6 @@ ScreenManagement:
         source: 'assets/vadix_logo.png'
         pos_hint: {'center_x':.85, 'center_y':.2}
 
-    # BoxLayout:
-    #     size_hint: 0.9, 0.08
-    #     pos_hint: {'center_x':.5, 'center_y':.954}
-    #     opacity: 0
-    #     BoxLayout:
-    #         orientation: "vertical"
-    #         Label: 
-    #             height: 16
-    #             color: (1, 1, 1, .8)
-    #             text: 'Raw Report (advanced)'
-    #         CheckBox:
-    #             size: self.width, 24
-    #             on_press: root.isShownMenu = not root.isShownMenu
-
-    #     Button:
-    #         size_hint: 0.9, 0.75
-    #         pos_hint: {'center_x':.25, 'center_y':.5}
-    #         on_release: app.root.current = "main"
-    #         text: "Perform new scan"
-    #         font_size: sp(20)
-
-    # BoxLayout:
-    #     id: advanced_box
-    #     size_hint: 0.9, 0.9
-    #     pos_hint: {'center_x':.5, 'center_y':.46}
-    #     width:   0 if root.isShownMenu else 0.9
-    #     opacity: 0 if root.isShownMenu else 1
-    #     CodeInput:
-    #         id: result_panel
-
     BoxLayout:
         orientation: "vertical"
         id: summary_main
@@ -173,15 +143,6 @@ ScreenManagement:
                 markup: True
                 color: (0.3, 0.3, 1.0, .8)
                 on_ref_press: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
-
-        # Button:
-        #     font_size: sp(12)
-        #     size_hint: 0.9, 0.15
-        #     pos_hint: {'center_x':.5}
-        #     text: 
-        #     background_down: 'assets/blog_button.png'
-        #     background_normal: 'assets/blog_button.png'
-        #     on_release: webbrowser.open("http://blog.vadix.io/2019/04/08/airscan/")
 
         GridLayout:
             id: summary_grid
