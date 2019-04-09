@@ -15,25 +15,33 @@ class Scanner(object):
         s.mount('http://', HTTPAdapter(max_retries=retries))
         return s
 
-    def generate_report(self, ip_port_dataframe):
+    def inspect_http(self, source_data):
+        # ToDo: Make this threaded like the port_scanner
         sess = self.get_session()
-        report_data = {}
         
-        for ip_addr, open_ports in ip_port_dataframe.items():
-            for port_number, is_port_open in open_ports.items():
-                report_data[ip_addr] = {}
+        for ip_addr, ip_data in source_data.items():
+            for port_number in ip_data['open_ports']:
                 url = "http://%s:%s" % (ip_addr, port_number)
-                print("Testing HTTP from %s" % (url))
                 try:
                     url_res = sess.get(url, timeout=0.1)
                     url_res.raise_for_status()
                 except Exception as err:
                     continue
                 if url_res.ok:
-                    print("Valid Response!")
-                    report_data[ip_addr]['HttpResponse'] = True
-                    if self.target_word in url_res.text + str(url_res.headers):
-                        print("%s in text" % self.target_word)
-                        report_data[ip_addr]['FlaggedResponse'] = True
+                    if 'http' not in source_data[ip_addr].keys():
+                        source_data[ip_addr]['http'] = []
+                    source_data[ip_addr]['http'].append(url)
 
-        return report_data
+                    if 'http_nvr' not in source_data[ip_addr].keys():
+                        source_data[ip_addr]['http_nvr'] = []
+                    if self.target_word in url_res.text + str(url_res.headers):
+                        source_data[ip_addr]['http_nvr'].append(url)
+
+
+    def generate_pipeline_steps(self):
+        steps = []
+        steps.append({
+            "func": self.inspect_http,
+            "end_text": "Inspected HTTP responses"
+        })
+        return steps

@@ -11,6 +11,9 @@ class Scanner(object):
     _data = None
 
     def get_mac_vendor_data(self):
+        # ToDo: Read this data like the target and port definitions in screen_scan.py 
+        # Do not load it here in this module
+        # Also, use JSON in next file def
         mac_table = {}
         if self._data is None:
             self._data = requests.get(self.mac_vendor_url).text
@@ -35,16 +38,20 @@ class Scanner(object):
                 pass
         return mac_records
 
-    def generate_report(self, ip_port_dataframe):
+    def get_mac_addresses(self, source_data):
         device_arp_table = self.get_arp_data()
         vendor_data = self.get_mac_vendor_data()
-        report_data = {}
-        for ip, ip_report_data in ip_port_dataframe.items():
-            report_data[ip] = {}
+        for ip, ip_data in source_data.items():
             ip_mac_addr = device_arp_table.get(ip)
-            report_data[ip]['MAC'] = ip_mac_addr
+            source_data[ip]['mac'] = ip_mac_addr
             if ip_mac_addr:
                 short_mac = "".join(ip_mac_addr.split(":")[:3]).upper()
-                report_data[ip]['VendorMatch'] = vendor_data.get(short_mac)
-        print(report_data)
-        return report_data
+                source_data[ip]['known_mac_vendor'] = vendor_data.get(short_mac, False)
+
+    def generate_pipeline_steps(self):
+        steps = []
+        steps.append({
+            "func": self.get_mac_addresses,
+            "end_text": "Retrieved MAC addresses"
+        })
+        return steps

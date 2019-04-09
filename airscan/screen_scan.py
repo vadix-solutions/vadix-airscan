@@ -81,15 +81,30 @@ class ScanScreen(Screen):
 
     def prepare_report(self, source_data):
         report = {}
-        print("Changing to result page")
+        for ip_addr, ip_data in source_data.items():
+            report[ip_addr] = self.prepare_individual_report(ip_data)
+
         App.get_running_app().report = report
-        print(source_data)
+        # Bring us to the result screen
         self.parent.current = "result"
+
+
+    def prepare_individual_report(self, ip_data):
+        report = {
+            'open_ports': len(ip_data.get('open_ports', [])) > 0,
+            'known_mac_vendor': ip_data.get('known_mac_vendor', False),
+            'http_response': len(ip_data.get('http', [])) > 0,
+            'http_nvr_response': len(ip_data.get('http_nvr', [])) > 0
+        }
+        report['risk'] = sum(report.values())
+        return report
 
 
     def generate_scan_pipeline(self):
         scan_pipeline = []
         scan_pipeline += self.vdx_dev_scanner.generate_pipeline_steps()
+        scan_pipeline += self.vdx_mac_scanner.generate_pipeline_steps()
+        scan_pipeline += self.vdx_http_scanner.generate_pipeline_steps()
         scan_pipeline += self.end_pipeline_steps
 
         # Insert progress percentage into each step object so run_pipeline can use it stateless
@@ -110,28 +125,3 @@ class ScanScreen(Screen):
                 "end_text": "Prepared report"
             },
         ]
-
-    # scan_pipeline = [
-    #     {
-    #         'func': None, 
-    #         'progress': 0,
-    #         'text': 'Scanning network devices.. (this will take a minute)'
-    #     },{
-    #         'name': 'ip_scan',
-    #         'func': vdx_dev_scanner.generate_report, 
-    #         'progress': 15,
-    #         'text': 'Inspecting network device hardware ID..'
-    #     },{
-    #         'name': 'mac_scan',
-    #         'func': vdx_mac_scanner.generate_report, 
-    #         'progress': 75,
-    #         'arg_result': 'ip_scan',
-    #         'text': 'Inspecting network device HTTP behavior..'
-    #     },{
-    #         'name': 'http_scan',
-    #         'func': vdx_http_scanner.generate_report, 
-    #         'arg_result': 'ip_scan',
-    #         'progress': 90,
-    #         'text': 'Reviewing results..'
-    #     }
-    # ]
