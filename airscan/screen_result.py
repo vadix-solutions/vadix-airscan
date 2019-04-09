@@ -45,7 +45,7 @@ class ResultScreen(Screen):
             layout.add_widget(Label(text=ip, **self.cell_kwargs))
 
             for cond_passed in summary_report:
-                image_source = 'assets/test_fail.png' if cond_passed else 'assets/test_pass.png'
+                image_source = 'assets/warning.png' if cond_passed else 'assets/success.png'
                 layout.add_widget(Image(source=image_source, **self.cell_kwargs))
 
 
