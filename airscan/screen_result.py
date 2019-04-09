@@ -68,14 +68,10 @@ class ResultScreen(Screen):
             for key in self.report_attr:
                 cond_passed = ip_report[key]
                 if cond_passed:
-                    image_source = 'assets/test_fail.png' 
+                    image_source = 'assets/success.png' 
                 else: 
-                    image_source = 'assets/test_pass.png'
+                    image_source = 'assets/warning.png'
                 layout.add_widget(Image(source=image_source, **self.cell_kwargs))
-
-
-
-
 
  
     # def render_advanced_raw(self, data_report):
