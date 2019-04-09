@@ -78,7 +78,8 @@ class ScanScreen(Screen):
 
 
     def filter_known_devices(self, source_data):
-        print("Source data: %s" % source_data)
+        print("Source data: %s" % cf_json(source_data))
+
         detected_known_devices = {}
         for ip, ip_data in source_data.items():
             known_device = self.is_device_known(ip_data)
@@ -113,6 +114,8 @@ class ScanScreen(Screen):
         report = {}
         for ip_addr, ip_data in source_data.items():
             report[ip_addr] = self.prepare_individual_report(ip_data)
+        
+        print("Report data: %s" % cf_json(report))
 
         App.get_running_app().report = report
         # Bring us to the result screen
@@ -127,7 +130,8 @@ class ScanScreen(Screen):
             'http_nvr_response': len(ip_data.get('http_nvr', [])) > 0
         }
         report['risk'] = sum(report.values())
-        report['name'] = ip_data.get('known_mac_vendor', False)
+        if report['known_mac_vendor']:
+            report['name'] = ip_data.get('known_mac_vendor')
         return report
 
 

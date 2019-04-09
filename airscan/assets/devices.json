@@ -1,7 +1,7 @@
 {
     "chromecast_v1": {
         "mac": ["08:9e:08"],
-        "open_ports": [[8008]]
+        "open_ports": [[8008], [8008, 8443]]
     },
     "chromecast_v2": {
         "open_ports": [[8443, 8008, 8009]]
