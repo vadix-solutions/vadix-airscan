@@ -122,11 +122,12 @@ class ScanScreen(Screen):
     def prepare_individual_report(self, ip_data):
         report = {
             'open_ports': len(ip_data.get('open_ports', [])) > 0,
-            'known_mac_vendor': ip_data.get('known_mac_vendor', False),
+            'known_mac_vendor': bool(ip_data.get('known_mac_vendor', False)),
             'http_response': len(ip_data.get('http', [])) > 0,
             'http_nvr_response': len(ip_data.get('http_nvr', [])) > 0
         }
         report['risk'] = sum(report.values())
+        report['name'] = ip_data.get('known_mac_vendor', False)
         return report
 
 

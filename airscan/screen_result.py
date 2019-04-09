@@ -55,7 +55,8 @@ class ResultScreen(Screen):
         
         for ip, ip_report in sorted(data_report.items(), 
                                          key=lambda kv: kv[1]['risk']):
-            layout.add_widget(Label(text=ip, **self.cell_kwargs))
+            layout.add_widget(Label(
+                text=ip_report.get('name',ip), **self.cell_kwargs))
             for key in self.report_attr:
                 detected = ip_report[key]
                 if detected:
