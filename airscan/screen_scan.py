@@ -1,5 +1,7 @@
+import os
 import json
 import time
+import requests
 
 import kivy.app
 import kivy.uix.boxlayout
@@ -36,6 +38,8 @@ class ScanScreen(Screen):
     
     def _get_json_url_or_file(self, url_file):
         url, file_path = url_file
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_path, file_path)
         try:
             print("Loading Json from URL: %s" % url)
             json_def = requests.get(url).json()
