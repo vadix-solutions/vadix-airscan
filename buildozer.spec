@@ -4,7 +4,7 @@
 title = AirScan
 
 # (str) Package name
-package.name = airscanner
+package.name = airscan
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = io.vadix
@@ -28,7 +28,7 @@ source.include_exts = py,png,jpg,kv,atlas,json
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.4
+version = 0.5
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

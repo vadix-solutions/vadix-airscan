@@ -1,6 +1,5 @@
 import json
 from kivy.app import App
-from airscan_util import cf_json, banner
 from pygments import lexers
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 
@@ -29,11 +28,11 @@ class ResultScreen(Screen):
     def render_summary(self, data_report):
         highest_risk = max([v['risk'] for v in data_report.values()])
         
-        summary_image = 'assets/success.png'
-        summary_text = 'You are safe!'
-        summary_subtext = 'No suspicious devices were found on network.'
-        
-        if highest_risk <= 2:
+        if highest_risk == 0:
+            summary_image = 'assets/success.png'
+            summary_text = 'You are safe!'
+            summary_subtext = 'No suspicious devices were found on network.'
+        elif highest_risk <= 2:
             summary_image = 'assets/warning.png'
             summary_text = 'Some activity found.'
             summary_subtext = 'Some active devices found on your network, but they are not likely to be malicious.'

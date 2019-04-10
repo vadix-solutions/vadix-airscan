@@ -1,10 +1,9 @@
 import re
-import csv
 import requests
-from airscan_util import cf_json, banner
 
+from scanners.base import BaseScanner
 
-class Scanner(object):
+class Scanner(BaseScanner):
     mac_vendor_url = "http://app.vadix.io/vendor.csv"
     arp_file = "/proc/net/arp"
 

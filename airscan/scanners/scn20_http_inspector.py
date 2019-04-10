@@ -2,10 +2,10 @@ import requests
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-from airscan_util import cf_json, banner
+from scanners.base import BaseScanner
 
 
-class Scanner(object):
+class Scanner(BaseScanner):
     target_word = 'NVR'
 
     def get_session(self):

@@ -7,18 +7,20 @@ import tempfile
 import threading
 import ipaddress
 from datetime import datetime
-from airscan_util import cf_json, banner
 from netifaces import interfaces, ifaddresses, AF_INET
 
+from scanners.base import BaseScanner
 
-class Scanner(object):
+class Scanner(BaseScanner):
 
-    batch_size = 500
-    timeout = 0.2   
+    timeout = 0.3   
+    batch_size = 1000
+    port_scan_url_file = ("http://app.vadix.io/ports.json", "../assets/ports.json")
 
+    def __init__(self, *args, **kwargs):
+        self.port_scan_data = self._get_json_url_or_file(self.port_scan_url_file)
+        source_data = {}
 
-    def __init__(self, target_ports, *args, **kwargs):
-        self.port_scan_data = target_ports
         self.port_list = set([
             port for port_group in self.port_scan_data.values() 
             for port in port_group
@@ -33,15 +35,6 @@ class Scanner(object):
             targets += [str(i) for i in ipaddress.IPv4Network(ip_range)]
         self.targets = list(set(targets))
 
-
-    def _chunks(self, l, n):
-        """Splits 'l' into a set of lists (max size 'n')"""
-        chunks = []
-        for i in range(0, len(l), n):
-            chunks.append(l[i:i + n])
-        return chunks
-        
-        
     def TCP_connect(self, scan_data, target, port):
         """Execute a single TCP port test"""
         # Remove default router IPs
