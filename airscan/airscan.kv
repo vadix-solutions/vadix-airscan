@@ -127,7 +127,7 @@ ScreenManagement:
         BoxLayout:    
             orientation: "vertical"
             spacing: 5
-            size_hint: 1.0, 0.2
+            size_hint: 0.8, 0.2
             pos_hint: {'center_x':.5, 'top':.4}
             Label:
                 id: summary_string
@@ -137,6 +137,10 @@ ScreenManagement:
             Label:
                 id: summary_substring
                 font_size: sp(12)
+                text_size: self.width, None
+                halign: "center"
+                height: self.texture_size[1]+20
+                size_hint_y: None
                 color: (1, 1, 1, .7)
 
             Label:
