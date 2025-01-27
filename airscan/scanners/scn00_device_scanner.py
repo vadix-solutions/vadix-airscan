@@ -1,12 +1,6 @@
-import os
-import sys
-import json
 import socket
-import requests
-import tempfile
 import threading
 import ipaddress
-from datetime import datetime
 from netifaces import interfaces, ifaddresses, AF_INET
 
 from scanners.base import BaseScanner

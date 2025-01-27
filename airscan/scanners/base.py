@@ -1,7 +1,7 @@
 import os
 import json
 from pygments import highlight, lexers, formatters
-
+import requests
 
 class BaseScanner(object):
 

@@ -66,13 +66,16 @@ class ScanScreen(Screen, BaseScanner):
         print("Running step: %s" % current_step)
         
         # Form the function call from pipeline data
-        required_func = current_step['func']
-        required_func(self.scan_data, 
-            *current_step.get('args', []), **current_step.get('kwargs', {}))
+        try:
+            required_func = current_step['func']
+            required_func(self.scan_data, 
+                *current_step.get('args', []), **current_step.get('kwargs', {}))
+            # Update the progress bar and status text
+            self.ids.status_label.text = current_step['end_text']
+            self.ids.progress_bar.value = current_step['progress']
+        except Exception as e:
+            self.ids.status_label.text = "Error running step: %s" % current_step
 
-        # Update the progress bar and status text
-        self.ids.status_label.text = current_step['end_text']
-        self.ids.progress_bar.value = current_step['progress']
         
         # Check if there are more tasks to run
         if len(self.scan_pipeline) > 0:
